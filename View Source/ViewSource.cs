@@ -4,16 +4,16 @@ using NAudio.Wave;
 using System.Collections.Generic;
 using System.Linq;
 
+using Svg;
+
 namespace ViewSource
 {
     public class ViewSource
     {
-        private string iInputFilename;
-        private string iOutputFilename;
-        private float[][] iSamples;
-        private int iWidth;
-        private int iHeight;
-        private int iShapeCount;
+        const float marginX = 100F;
+        const float marginY = 200F;
+        const float cellWidth = 100F;
+        const float cellHeight = 200F;
 
         public ViewSource()
         {
@@ -41,21 +41,68 @@ namespace ViewSource
                 throw new Exception("Depth not specified");
             }
 
-            iInputFilename = aArgs[0];
+            var inputFilename = aArgs[0];
 
-            iOutputFilename = CreateOutputFilename(iInputFilename);
+            var outputFilename = CreateOutputFilename(inputFilename);
 
-            iSamples = LoadStereoSamples(iInputFilename, "Unable to read audio file");
+            var samples = LoadStereoSamples(inputFilename, "Unable to read audio file");
 
-            iWidth = ProcessValue(aArgs[1], "Invalid width specified");
+            var width = ProcessValue(aArgs[1], "Invalid width specified");
 
-            iHeight = ProcessValue(aArgs[2], "Invalid height specified");
+            var height = ProcessValue(aArgs[2], "Invalid height specified");
 
-            iShapeCount = iWidth * iHeight;
+            var shapeCount = width * height;
 
-            var partitions = PartitionArray(iSamples, iShapeCount);
+            var partitions = PartitionArray(samples, shapeCount);
 
             var shapeIndexes = CalculateShapeIndexesFromPartitions(partitions);
+
+            var layers = CreateLayers();
+
+            var shapes = CreateShapes();
+
+            var shapePositions = CreateShapePositions(width, height);
+
+            var enumerator = shapePositions.AsEnumerable().GetEnumerator();
+
+            foreach (var entry in shapeIndexes)
+            {
+                enumerator.MoveNext();
+
+                WriteShapes(entry, enumerator.Current, layers, shapes);
+            }
+
+            var svg = new SvgDocument();
+
+            svg.X = 0;
+            svg.Y = 0;
+            svg.Width = new SvgUnit(SvgUnitType.Millimeter, width * cellWidth + 2 * marginX);
+            svg.Height = new SvgUnit(SvgUnitType.Millimeter, height * cellHeight + 2 * marginY);
+
+            foreach (var layer in layers)
+            {
+                svg.Children.Add(layer.Group);
+            }
+
+            svg.Write(outputFilename);
+        }
+
+        private static void WriteShapes(int[] aShapeIndexes, Point aPosition, Layer[] aLayers, Shape[] aShapes)
+        {
+            int channel = 0;
+
+            foreach (var entry in aShapeIndexes)
+            {
+                WriteShape(entry, aPosition, channel++, aLayers, aShapes);
+            }
+        }
+
+        private static void WriteShape(int aShapeIndex, Point aPosition, int aChannel, Layer[] aLayers, Shape[] aShapes)
+        {
+            foreach (var layer in aLayers)
+            {
+                layer.Write(aShapes[aShapeIndex], aPosition, aChannel);
+            }
         }
 
         private static int ProcessValue(string aValue, string aError)
@@ -161,7 +208,7 @@ namespace ViewSource
             return partitions.ToArray();
         }
 
-        private int[][] CalculateShapeIndexesFromPartitions(float[][][] aPartitions)
+        private static int[][] CalculateShapeIndexesFromPartitions(float[][][] aPartitions)
         {
             var shapeIndexes = new List<int[]>();
 
@@ -173,7 +220,7 @@ namespace ViewSource
             return shapeIndexes.ToArray();
         }
 
-        private IEnumerable<int> CalculateShapeIndexesFromPartition(float[][] aPartition)
+        private static IEnumerable<int> CalculateShapeIndexesFromPartition(float[][] aPartition)
         {
             var left = aPartition.Select(v => v.ElementAt(0));
             var right = aPartition.Select(v => v.ElementAt(1));
@@ -182,7 +229,7 @@ namespace ViewSource
             yield return CalculateShapeIndexFromSamples(right);
         }
 
-        private int CalculateShapeIndexFromSamples(IEnumerable<float> aSamples)
+        private static int CalculateShapeIndexFromSamples(IEnumerable<float> aSamples)
         {
             float total = 0;
 
@@ -193,6 +240,75 @@ namespace ViewSource
             }
 
             return (int)total % 128;
+        }
+
+        private static Point[] CreateShapePositions(int aWidth, int aHeight)
+        {
+            var positions = new List<Point>();
+
+            float y = marginY + cellHeight / 2;
+
+            for (int county = 0; county < aHeight; county++)
+            {
+                float x = marginX + cellWidth / 2;
+
+                for (int countx = 0; countx < aWidth; countx++)
+                {
+                    positions.Add(new Point(x, y));
+
+                    x += cellWidth;
+                }
+
+                y += cellHeight;
+            }
+
+            return positions.ToArray();
+        }
+
+        private static Layer[] CreateLayers()
+        {
+            var widths = new[] { 1.5F, 2.5F, 3.0F, 6.0F };
+            var depths = new[] { 7F, 5F, 3F, 1F };
+
+            var layers = new List<Layer>();
+
+            foreach (var width in widths)
+            {
+                foreach (var depth in depths)
+                {
+                    layers.Add(new LayerDrill(width, depth));
+                }
+            }
+
+            layers.Add(new Layer()); // the master layer
+
+            return layers.ToArray();
+        }
+
+        private static Shape[] CreateShapes()
+        {
+            // 8 Circle size: 45mm, 40mm, 35mm, 30mm, 25mm, 20mm, 15mm, 10mm
+            // 4 Drill bit widths - line widths; 1.5mm, 2.5mm, 3mm, 6mm
+            // 4 Drill depths; 7mm, 5mm, 3mm, 1mm
+
+            var radii = new [] { 45F, 40F, 35F, 30F, 25F, 20F, 15F, 10F };
+            var widths = new [] { 1.5F, 2.5F, 3.0F, 6.0F };
+            var depths = new [] { 7F, 5F, 3F, 1F };
+
+            var shapes = new List<Shape>();
+
+            foreach (var width in widths)
+            {
+                foreach (var depth in depths)
+                {
+                    foreach (var radius in radii)
+                    {
+                        shapes.Add(new Shape(radius, width, depth));
+                    }
+                }
+            }
+
+            return shapes.ToArray();
         }
     }
 }
