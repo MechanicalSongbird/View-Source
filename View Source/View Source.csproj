@@ -57,7 +57,6 @@
     <Compile Include="Layer.cs" />
     <Compile Include="Shape.cs" />
     <Compile Include="ViewSource.cs" />
-    <Compile Include="SvgGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

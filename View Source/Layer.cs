@@ -14,35 +14,31 @@ namespace ViewSource
 
         public SvgGroup Group => iGroup;
 
-        protected void Write(float aRadius, float aWidth, float aStroke, Point aPosition, int aChannel)
+        public virtual void Write(Shape aShape, Point aPosition, int aChannel)
         {
+            // write paths or mid-cricle
+
             var circle = new SvgCircle();
+
+            var radius = aShape.Radius - aShape.Width / 2;
 
             circle.Fill = SvgPaintServer.None;
             circle.CenterX = new SvgUnit(SvgUnitType.Millimeter, aPosition.X);
-            circle.Radius = new SvgUnit(SvgUnitType.Millimeter, aRadius);
+            circle.Radius = new SvgUnit(SvgUnitType.Millimeter, radius);
 
             if (aChannel == 0)
             {
-                circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y - aRadius - aWidth / 2);
+                circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y - aShape.Radius - 1);
             }
             else
             {
-                circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y + aRadius + aWidth / 2);
+                circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y + aShape.Radius + 1);
             }
 
-            if (aStroke != 0)
-            {
-                circle.Stroke = new SvgColourServer(System.Drawing.Color.Black);
-                circle.StrokeWidth = new SvgUnit(SvgUnitType.Millimeter, aStroke);
-            }
+            circle.Stroke = new SvgColourServer(System.Drawing.Color.Black);
+            circle.StrokeWidth = new SvgUnit(SvgUnitType.Millimeter, aShape.Width);
 
             iGroup.Children.Add(circle);
-        }
-
-        public virtual void Write(Shape aShape, Point aPosition, int aChannel)
-        {
-            Write(aShape.Radius, aShape.Width, aShape.Width, aPosition, aChannel);
         }
     }
 
@@ -62,7 +58,24 @@ namespace ViewSource
         {
             if (aShape.Width == iWidth && aShape.Depth == iDepth)
             {
-                Write(aShape.Radius, aShape.Width, 0, aPosition, aChannel);
+                // write paths for the outer circle
+
+                var circle = new SvgCircle();
+
+                circle.Fill = SvgPaintServer.None;
+                circle.CenterX = new SvgUnit(SvgUnitType.Millimeter, aPosition.X);
+                circle.Radius = new SvgUnit(SvgUnitType.Millimeter, aShape.Radius);
+
+                if (aChannel == 0)
+                {
+                    circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y - aShape.Radius - 1);
+                }
+                else
+                {
+                    circle.CenterY = new SvgUnit(SvgUnitType.Millimeter, aPosition.Y + aShape.Radius + 1);
+                }
+
+                iGroup.Children.Add(circle);
             }
         }
     }

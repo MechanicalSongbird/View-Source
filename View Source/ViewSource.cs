@@ -11,9 +11,11 @@ namespace ViewSource
     public class ViewSource
     {
         const float marginX = 100F;
-        const float marginY = 200F;
-        const float cellWidth = 100F;
-        const float cellHeight = 200F;
+        const float marginY = 100F;
+        const float cellWidth = 47F;  // 1 * 45 + 2 inter-circle gap
+        const float cellHeight = 97F; // 2 * 45 + 2 inter-circle gap + 5 inter line gap
+        //const float cellWidth = 53F;  // 1 * 51 + 2 inter-circle gap
+        //const float cellHeight = 109F; // 2 * 51 + 2 inter-circle gap + 5 inter line gap
 
         public ViewSource()
         {
@@ -268,7 +270,7 @@ namespace ViewSource
         private static Layer[] CreateLayers()
         {
             var widths = new[] { 1.5F, 2.5F, 3.0F, 6.0F };
-            var depths = new[] { 7F, 5F, 3F, 1F };
+            var depths = new[] { 1F, 3F, 5F, 7F };
 
             var layers = new List<Layer>();
 
@@ -291,9 +293,9 @@ namespace ViewSource
             // 4 Drill bit widths - line widths; 1.5mm, 2.5mm, 3mm, 6mm
             // 4 Drill depths; 7mm, 5mm, 3mm, 1mm
 
-            var radii = new [] { 45F, 40F, 35F, 30F, 25F, 20F, 15F, 10F };
+            var radii = new [] { 22.5F, 20F, 17.5F, 15F, 22.5F, 10F, 7.5F, 5F };
             var widths = new [] { 1.5F, 2.5F, 3.0F, 6.0F };
-            var depths = new [] { 7F, 5F, 3F, 1F };
+            var depths = new [] { 1F, 3F, 5F, 7F };
 
             var shapes = new List<Shape>();
 
