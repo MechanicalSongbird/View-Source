@@ -293,7 +293,7 @@ namespace ViewSource
             // 4 Drill bit widths - line widths; 1.5mm, 2.5mm, 3mm, 6mm
             // 4 Drill depths; 7mm, 5mm, 3mm, 1mm
 
-            var radii = new [] { 22.5F, 20F, 17.5F, 15F, 22.5F, 10F, 7.5F, 5F };
+            var radii = new [] { 22.5F, 20F, 17.5F, 15F, 12.5F, 10F, 7.5F, 5F };
             var widths = new [] { 1.5F, 2.5F, 3.0F, 6.0F };
             var depths = new [] { 1F, 3F, 5F, 7F };
 
