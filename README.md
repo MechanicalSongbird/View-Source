@@ -15,11 +15,11 @@ This work is scheduled to be shown from March 2016 at the National Glass Centre 
 svg files for 4 panels have been generated, one for each of the following pieces
 
 Gymnopédies No. 1, Lent at Douloureux
-from Satie: Complete Piano Works, Vol. 1
+from Satie: Complete Piano Works, Vol. 1 (1994)
 by Bojan Gorisek
 
-Computer Love (Computerliebe)
-from Computer World (1981)
+Computerliebe
+from The Mix [German] (1991)
 by Kraftwerk
 
 Erased Existence
