@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Panels", "Panels", "{CCF336F9-948B-4360-9366-D975BDDDC5A4}"
 	ProjectSection(SolutionItems) = preProject
-		Panels\Computer Love.wav.svg = Panels\Computer Love.wav.svg
+		Panels\Computerliebe.wav.svg = Panels\Computerliebe.wav.svg
 		Panels\Erased Existence.wav.svg = Panels\Erased Existence.wav.svg
 		Panels\Gymnopédie No 1.wav.svg = Panels\Gymnopédie No 1.wav.svg
 		Panels\Only Skin.wav.svg = Panels\Only Skin.wav.svg
