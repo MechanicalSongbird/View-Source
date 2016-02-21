@@ -10,8 +10,8 @@ namespace ViewSource
 {
     public class ViewSource
     {
-        const float marginX = 100F;
-        const float marginY = 100F;
+        const float marginX = 0F;
+        const float marginY = 0F;
         const float cellWidth = 47F;  // 1 * 45 + 2 inter-circle gap
         const float cellHeight = 97F; // 2 * 45 + 2 inter-circle gap + 5 inter line gap
         //const float cellWidth = 53F;  // 1 * 51 + 2 inter-circle gap
@@ -241,7 +241,7 @@ namespace ViewSource
                 total += abs;
             }
 
-            return (int)total % 128;
+            return (int)(total * 1000) % 128;
         }
 
         private static Point[] CreateShapePositions(int aWidth, int aHeight)
