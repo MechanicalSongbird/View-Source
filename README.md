@@ -12,7 +12,7 @@ This repository contains source code for the software used in View Source by Gra
 
 This work is scheduled to be shown from March 2016 at the National Glass Centre in Sunderland, North East England.
 
-4 panels have been made, one for each of the following tracks
+svg files for 4 panels have been generated, one for each of the following pieces
 
 Gymnopédies No. 1, Lent at Douloureux
 from Satie: Complete Piano Works, Vol. 1
